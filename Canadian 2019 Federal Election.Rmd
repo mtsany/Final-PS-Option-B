@@ -37,13 +37,13 @@ census_data <- read_csv("outputs/census_data.csv")
 
 # Abstract
 
-This report analyzes the 2019 Canadian Federal Election and the outcome that would have occurred if every eligible voter had voted. Specifically, the chosen predictor variables that will be used for analysis are an individual's unique characteristics, such as education and income. This report will demonstrate that the election would have had similar outcomes, but more importantly, it sheds light upon the importance of voter turnout.
+An analysis of the 2019 Canadian Federal Election and the outcome that would have occurred if every eligible voter had voted is done. Specifically, the chosen predictor variables that will be used for analysis are an individual's unique characteristics, such as education and income. This report will demonstrate that the election would have had similar outcomes, but more importantly, it sheds light upon the importance of voter turnout.
 
 # Introduction
 
 Voting eligibility has been more important in the current decade more than ever. Voter turnout is affected highly by “a number of sociodemographic characteristics, particularly age and education,” (Blais, 2005). So, there are numerous variables that affect voter turnout. In this paper, the 2019 Canadian Federal Election will be analyzed such that every eligible voter will have voted. In this case, voter turnout for this election will be nearly 100%. 
 
-So, a multilevel logistic regression with poststratification (MRP) model based off survey data given by Canadian Election Study (CES) and census data given by General Social Survey (GSS) will be post-stratified. The CES dataset will be based off the online survey. This allows estimates based on certain characteristics, such as education and income levels, that can infer voter’s intentions based off the CES data. As such, full voter turnout in Canada will simulate and predict the 2019 Canadian Federal Election with full voter turnout.z Code and data supporting this is available at: https://github.com/mtsany/Final-PS-Option-B
+So, a multilevel logistic regression with poststratification (MRP) model based off survey data given by Canadian Election Study (CES) and census data given by General Social Survey (GSS) will be post-stratified. The CES dataset will be based off the online survey. This allows estimates based on certain characteristics, such as education and income levels, that can infer voter’s intentions based off the CES data. As such, full voter turnout in Canada will simulate and predict the 2019 Canadian Federal Election with full voter turnout. Code and data supporting this is available at: https://github.com/mtsany/Final-PS-Option-B. For legal reasons, the cleaned GSS data cannot be uploaded.
 
 
 # Data
@@ -55,7 +55,7 @@ However, after cleaning the data, the number of observations decreased to 16,518
 
 The post-stratified data is the census data by GSS is provided by Statistics Canada. The GSS data includes variables relating to family, such as educational attainment and ethnic diversity. The GSS survey surveyed "approximately 43,000 people, 15 years of age and older, living in the 10 provinces" (Statistics Canada, 2017). Statistics Canada randomly chose a sample of households and "uses a frame that combines landline and cellular telephone numbers from the Census and various administrative sources with Statistics Canada's dwelling frame" (Statistics Canada, 2017). So, Statistics Canada collected the data through a telephone interview to one random eligible person in a household that resides in Canada.
 
-According to (2019 CES Codebook), the dataset consisted of approximately 50% men and 50% women. The dataset had 28% of its respondents aged 18 - 34, 33% aged 35 - 54, and 39% aged 55 and higher, according to (2019 CES Codebook). The CES team also ensured that "provincial quotas were split evenly" in the survey. 
+According to Stephenson et al. (2020), the dataset consisted of approximately 50% men and 50% women. The dataset had 28% of its respondents aged 18 - 34, 33% aged 35 - 54, and 39% aged 55 and higher. The CES team also ensured that "provincial quotas were split evenly" in the survey. 
 
 The chosen predictor variables were: sex, income, province, age, and education level. As stated previously, age and education are particularly important in voter intentions. Other social chracteristics, such as income, province, and sex were chosen because these are key features that affect an individual's voter intentions.
 
@@ -74,7 +74,7 @@ Education was divided into three categories: lower, middle, and higher education
 
 Income was categorized into income brackets. It is important to note that the survey data and the census data did not have matching income data. The income brackets for the survey data had intervals of \$30,000. Meanwhile, the interval for the census data was \$25,000. To remedy this, the income categories were divided into lower, middle, and upper. Lower was categorized by income of less than \$100,000. Middle were observations that were between \$60,001 to \$150,000 in the survey data. However, in the census data, this was coded as \$75,000 to \$124,999. Observations that were greater than \$150,001 in the survey data and greater than \$125,000 in the census data was categorized as upper. There is no perfect solution for this problem. This will create a bias in the estimate for the groups in this variable.
 
-Gender was quantified as a binary variable in the survey data. Sex was quantified as a binary variable in the census data. There were no gender variable in the census data. "imputation using the gender reported by an individual in the sample to predict their potential responses for sex" (cite Lecture 08 - Sex and Gender). Statistically, this will have no issue in the modelling and proceeding analysis.
+Gender was quantified as a binary variable in the survey data. Sex was quantified as a binary variable in the census data. There were no gender variable in the census data. "imputation using the gender reported by an individual in the sample to predict their potential responses for sex" (Kennedy et al. 2020). Statistically, this will have no issue in the modelling and proceeding analysis.
 
 
 ```{r include=FALSE}
@@ -122,7 +122,7 @@ According to Akaike's Information Criteria (AIC), there is no better fit by remo
 
 In backward elimination using AIC, it starts with all of the potential predictor variables and omits the variable with the largest p-value every time. This p-value was carried out by a partial F-test. Furthermore, this creates a smaller information criterion. In backward elimination using BIC, it penalizes the model complexity more heavily than AIC. This makes the model much more simpler than backwards AIC. It can be seen that the model using AIC does not omit any predictor variables, while BIC omits age brackets (Sue-Chee, 2020).
 
-The new model is: $$log(\frac{p}{1-p})= \beta_{0} + \beta_{1} x_{age,i}  + \beta_{2} x_{prov, i}+ \beta_{3} x_{educ, i} + \beta_{4}x_{inc,i} + \beta_{5}x_{sex,i}$$
+The new model is: $$log(\frac{p}{1-p})= \beta_{0}  + \beta_{1} x_{prov, i}+ \beta_{2} x_{educ, i} + \beta_{3}x_{inc,i} + \beta_{4}x_{sex,i}$$
 
 # Results
 
@@ -197,7 +197,7 @@ income_cat <- census_data_grouped %>%
 ```
 
 
-```{r include=FALSE}
+```{r echo=FALSE}
 # Table 2: Sex differences
 sex_table <- kbl(sex_cat,
     caption = "Voter intention by sex characteristic",
@@ -241,7 +241,7 @@ prov_cat$province_q <- c("Atlantic Region", "Central Canada", "Ontario", "Prairi
 
 Table 3 depicts voter intention using income and education levels. As a household's income increases, the household is more likely to vote for the Conservative Party over the Liberal Party. Furthermore, it is seen that a higher education correlates to a higher probability of voting for the Liberal Party.
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Renaming the row in province
 prov_cat$province_q <- c("Atlantic Region", "Central Canada", "Ontario", "Prairie Region", "West Coast")
 
@@ -281,6 +281,8 @@ For a future report, a census data that has a similar income bracket should be u
 
 Although only five predictor variables were picked initially, more social characteristics could have been chosen for the model. Furthermore, predictor variables, such as education may not have been cleaned properly for both survey and census data because the cells may have been misclassified. Categories in education, such as, "No schooling" were categorized into the same cell as households with "Some secondary/ high school". It had to be assumed that households in this cell will have similar voting intentions.
 
+Gender and sex were imputed as a binary variable in both the survey and census data. Males were coded as "1" and females were coded as "0". In the post-stratification, gender and sex were considered and assumed to be interchangeable. This is an ethical issue because sex refers to a "set of biological attributes in humans and animals" (Kennedy et al. 2020). However, gender refers to "the socially constructed roles, behaviours, expressions and identities" (Kennedy et al. 2020). According to Kennedy et al. (2020), it raises ethical concerns, despite the imputation not raising any statistical concerns, that people have the right to self-identify, which is ignored in this report. In the future, other measures to post-stratify sex and gender will be considered.
+
 The predictive power of this model seems to complement the actual result of the 2019 Canadian Federal Election. However, the model itself should be re-applied to past elections to understand and assess the actual predictive power of this model. If the model can be validated by previous elections, then the model has great predictive power. Other modifications to the model can include including or omitting certain predictor variables, which can improve the accuracy of the model.
 
 \newpage
@@ -291,15 +293,13 @@ The predictive power of this model seems to complement the actual result of the 
 \setlength{\parskip}{8pt}
 \noindent
 
-Alexander, R and Caetano, S. (2020). *01-data_cleaning-post-strat1*. University of Toronto
-
-Alexander, R and Caetano, S. (2020). *01-data_cleaning-survey1*. University of Toronto
-
 Blais, A. (2006). WHAT AFFECTS VOTER TURNOUT? Annual Review of Political Science, 9(1), 111-125. https://doi.org/10.1146/annurev.polisci.9.070204.105121
 
-Caetano, S. (2020). *Gender_vs_Sex-Notes-Alexander-Caetano.pdf*. University of Toronto
+Kennedy, Lauren, et al. “Using Sex and Gender in Survey Adjustment.” ArXiv.org, 30 Sept. 2020, arxiv.org/abs/2009.14401. 
 
 R Core Team (2020). *R: A Language and Environment for Statistical Computing*. R Foundation for Statistical Computing, Vienna, Austria.
+
+Rohan, Alexander. 2020 "GSS_Cleaning". STA304
 
 Stephenson, Laura B; Harell, Allison; Rubenson, Daniel; Loewen, Peter John, 2020. Canadian Election Study - 2019 Online Survey Codebook. doi.org/10.7910/DVN/DUS88V
 
